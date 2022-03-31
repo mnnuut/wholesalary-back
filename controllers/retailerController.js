@@ -24,6 +24,7 @@ const addProductList = async (req, res, next) => {
 };
 const quotationLists = async (req, res, next) => {
   try {
+    console.log(req.body)
     const data = req.body;
     const id = req.params.id;
     await firestore
@@ -128,10 +129,10 @@ const getQuotationLists = async (req, res, next) => {
     const quotation = await firestore
       .collection("users")
       .doc(id)
-      .collection("retailer-quotation-lists");
+      .collection("retailer-quotation-lists")
+      .orderBy("dateTime", "asc")
     const data = await quotation.get();
     const productsArray = [];
-
     if (data.empty) {
       res.status(404).send("No student record found");
     } else {
@@ -164,14 +165,16 @@ const getQuotationListsConfirm = async (req, res, next) => {
       .collection("users")
       .doc(id)
       .collection("retailer-quotation-lists")
+      .orderBy("dateTime", 'asc')
     const data = await quotation.get();
+    console.log(data)
     const productsArray = [];
     if (data.empty) {
       res.status(404).send("No student record found");
     } else {
       // console.log(data.data())
       data.forEach((doc) => {
-        console.log(doc.data().dateTime)
+        // console.log(doc.data().dateTime)
         if (doc.data().status === "Confirm"){
         const newData = {
           id: doc.id,
