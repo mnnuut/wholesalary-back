@@ -80,6 +80,7 @@ const getQuotations = async (req, res, next) => {
     res.status(400).send(error.message);
   }
 };
+
 const getOrders = async (req, res, next) => {
   try {
     const id = req.params.id;

@@ -16,7 +16,6 @@ const {
     MESSAGING_SENDER_ID,
     APP_ID
 } = process.env;
-
 assert(PORT, 'PORT is required');
 assert(HOST, 'HOST is required');
 

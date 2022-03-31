@@ -21,7 +21,7 @@ const getProducts = async (req, res, next) => {
     const productsArray = [];
 
     if (data.empty) {
-      res.status(404).send("No student record found");
+      res.status(404).send("No product record found");
     } else {
       data.forEach((doc) => {
         const newData = {

@@ -2,6 +2,9 @@
 
 const firebase = require("../db");
 const firestore = firebase.firestore();
+const { query, orderBy, limit } = require("firebase/firestore");
+
+
 // import { collection, query, where } from "firebase/firestore";
 
 const addProductList = async (req, res, next) => {
@@ -34,6 +37,8 @@ const quotationLists = async (req, res, next) => {
     res.status(400).send(error.message);
   }
 };
+
+
 
 const getQuotationDetails = async (req, res, next) => {
   try {
@@ -152,6 +157,45 @@ const getQuotationLists = async (req, res, next) => {
   }
 };
 
+const getQuotationListsConfirm = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const quotation = await firestore
+      .collection("users")
+      .doc(id)
+      .collection("retailer-quotation-lists")
+    const data = await quotation.get();
+    const productsArray = [];
+    if (data.empty) {
+      res.status(404).send("No student record found");
+    } else {
+      // console.log(data.data())
+      data.forEach((doc) => {
+        console.log(doc.data().dateTime)
+        if (doc.data().status === "Confirm"){
+        const newData = {
+          id: doc.id,
+          creatorID: doc.data().creatorID,
+          dateTime: doc.data().dateTime,
+          orderID: doc.data().orderID,
+          status: doc.data().status,
+          storeID: doc.data().storeID,
+          total: doc.data().total,
+          countLists: doc.data().countLists,
+          storeName: doc.data().storeName,
+          shippingInfo: doc.data().shippingInfo,
+        };
+        productsArray.push(newData);
+      }
+      });
+      res.send(productsArray);
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+
 const getWholesalerQuotation = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -220,6 +264,7 @@ const deleteItemList = async (req, res, next) => {
 module.exports = {
   getWholesalerQuotation,
   getQuotationLists,
+  getQuotationListsConfirm,
   addProductList,
   updateQuotationStatus,
   getCartlists,
