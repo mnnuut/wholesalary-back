@@ -53,7 +53,8 @@ const getQuotations = async (req, res, next) => {
     const quotation = await firestore
       .collection("users")
       .doc(id)
-      .collection("wholesaler-quotation-request");
+      .collection("wholesaler-quotation-request")
+      .orderBy("dateTime", 'desc')
     const data = await quotation.get();
     const productsArray = [];
 

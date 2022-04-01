@@ -130,7 +130,7 @@ const getQuotationLists = async (req, res, next) => {
       .collection("users")
       .doc(id)
       .collection("retailer-quotation-lists")
-      .orderBy("dateTime", "asc")
+      .orderBy("dateTime", "desc")
     const data = await quotation.get();
     const productsArray = [];
     if (data.empty) {
@@ -165,17 +165,18 @@ const getQuotationListsConfirm = async (req, res, next) => {
       .collection("users")
       .doc(id)
       .collection("retailer-quotation-lists")
-      .orderBy("dateTime", 'asc')
+      .orderBy("dateTime", 'desc')
     const data = await quotation.get();
-    console.log(data)
     const productsArray = [];
     if (data.empty) {
+      console.log('No Student')
       res.status(404).send("No student record found");
     } else {
-      // console.log(data.data())
+      console.log('get Student')
       data.forEach((doc) => {
-        // console.log(doc.data().dateTime)
+        console.log(doc.data())
         if (doc.data().status === "Confirm"){
+          console.log("HELLO")
         const newData = {
           id: doc.id,
           creatorID: doc.data().creatorID,
