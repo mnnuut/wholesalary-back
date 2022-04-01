@@ -225,7 +225,7 @@ const updateQuotationStatus = async (req, res, next) => {
     const product = await firestore
       .collection("users")
       .doc(uid.trim())
-      .collection("retailer-quotation-lists")
+      .collection("retailer-request-lists")
       .doc(id.trim());
     await product.update(data);
     res.send("Student record updated successfuly");
@@ -234,6 +234,55 @@ const updateQuotationStatus = async (req, res, next) => {
   }
 };
 
+const updateCartAmount = async (req, res, next) => {
+  try {
+    console.log(req)
+    const id = req.params.id;
+    const uid = req.params.uid;
+    const product = await firestore
+      .collection("users")
+      .doc(uid.trim())
+      .collection("retailer-request-quotation")
+      .doc(id.trim())
+    await product.update({
+      quantity: req.body.quantity
+    });
+    res.send("Student record updated successfuly");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+// const getCartlists = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     const quotation = await firestore
+//       .collection("users")
+//       .doc(id)
+//       .collection("retailer-request-quotation");
+//     const data = await quotation.get();
+//     const productsArray = [];
+
+//     if (data.empty) {
+//       res.status(404).send("No student record found");
+//     } else {
+//       data.forEach((doc) => {
+//         const newData = {
+//           id: doc.id,
+//           price: doc.data().price,
+//           productName: doc.data().productName,
+//           quantity: doc.data().quantity,
+//           storeName: doc.data().storeName,
+//           storeID: doc.data().storeID,
+//         };
+//         productsArray.push(newData);
+//       });
+//       res.send(productsArray);
+//     }
+//   } catch (error) {
+//     res.status(400).send(error.message);
+//   }
+// };
 const deleteItem = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -271,6 +320,7 @@ module.exports = {
   getQuotationListsConfirm,
   addProductList,
   updateQuotationStatus,
+  updateCartAmount,
   getCartlists,
   quotationLists,
   getRetailerTransectionInfo,

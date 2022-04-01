@@ -7,6 +7,7 @@ const {
   updateQuotationStatus,
   quotationLists,
   getQuotationDetails,
+  updateCartAmount,
   getCartlists,
   getQuotationListsConfirm,
   deleteItem,
@@ -23,7 +24,10 @@ router.get("/retailer-cart/:id", getCartlists); //in use
 router.get("/quotations-details/:uid/:id", getQuotationDetails); //in use
 router.get("/get-retailer-transectoin-info/:id", getRetailerTransectionInfo); //in use
 router.get("/wholesaler", getWholesalerQuotation);
+
+router.put("/retailer-update-cart/:uid/:id", updateCartAmount); //in use
 router.put("/retailer-update-status/:uid/:id", updateQuotationStatus); //in use
+
 router.delete("/delete-quotation-request/:uid/:id", deleteItem); //in use
 router.delete("/delete-quotation-request-list/:uid/:id", deleteItemList); //in use
 
