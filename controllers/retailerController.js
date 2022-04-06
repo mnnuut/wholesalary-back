@@ -225,7 +225,7 @@ const updateQuotationStatus = async (req, res, next) => {
     const product = await firestore
       .collection("users")
       .doc(uid.trim())
-      .collection("retailer-request-lists")
+      .collection("retailer-quotation-lists")
       .doc(id.trim());
     await product.update(data);
     res.send("Student record updated successfuly");
