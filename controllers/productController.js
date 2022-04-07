@@ -31,6 +31,7 @@ const getProducts = async (req, res, next) => {
           Option: doc.data().Option,
           Price: doc.data().Price,
           Productname: doc.data().Productname,
+          Storename: doc.data().Storename,
           Rating: doc.data().Rating,
           Unit: doc.data().Unit,
           Image: doc.data().Image,

@@ -22,6 +22,24 @@ const addProductList = async (req, res, next) => {
     res.status(400).send(error.message);
   }
 };
+
+
+const addOrderList = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const id = req.body.creatorID;
+    await firestore
+      .collection("users")
+      .doc(id)
+      .collection("retailer-order-list")
+      .doc()
+      .set(data);
+    res.send("Record saved successfuly");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 const quotationLists = async (req, res, next) => {
   try {
     console.log(req.body)
@@ -137,6 +155,7 @@ const getQuotationLists = async (req, res, next) => {
       res.status(404).send("No student record found");
     } else {
       data.forEach((doc) => {
+        if (doc.data().status === "Waiting" || doc.data().status === "Confirm" || doc.data().status === "Reject"){
         const newData = {
           id: doc.id,
           creatorID: doc.data().creatorID,
@@ -150,6 +169,7 @@ const getQuotationLists = async (req, res, next) => {
           shippingInfo: doc.data().shippingInfo,
         };
         productsArray.push(newData);
+      }
       });
       res.send(productsArray);
     }
@@ -167,16 +187,15 @@ const getQuotationListsConfirm = async (req, res, next) => {
       .collection("retailer-quotation-lists")
       .orderBy("dateTime", 'desc')
     const data = await quotation.get();
+    console.log(data)
     const productsArray = [];
     if (data.empty) {
-      console.log('No Student')
       res.status(404).send("No student record found");
     } else {
-      console.log('get Student')
+      // console.log(data.data())
       data.forEach((doc) => {
-        console.log(doc.data())
-        if (doc.data().status === "Confirm"){
-          console.log("HELLO")
+        // console.log(doc.data().dateTime)
+        if (doc.data().status === "Confirm" || doc.data().status === "Wait for confirm payment" || doc.data().status === "Shipped" ){
         const newData = {
           id: doc.id,
           creatorID: doc.data().creatorID,
@@ -234,55 +253,23 @@ const updateQuotationStatus = async (req, res, next) => {
   }
 };
 
-const updateCartAmount = async (req, res, next) => {
+const updateOrderStatus = async (req, res, next) => {
   try {
-    console.log(req)
     const id = req.params.id;
     const uid = req.params.uid;
+    const data = req.body;
     const product = await firestore
       .collection("users")
       .doc(uid.trim())
-      .collection("retailer-request-quotation")
-      .doc(id.trim())
-    await product.update({
-      quantity: req.body.quantity
-    });
+      .collection("retailer-order-lists")
+      .doc(id.trim());
+    await product.update(data);
     res.send("Student record updated successfuly");
   } catch (error) {
     res.status(400).send(error.message);
   }
 };
 
-// const getCartlists = async (req, res, next) => {
-//   try {
-//     const id = req.params.id;
-//     const quotation = await firestore
-//       .collection("users")
-//       .doc(id)
-//       .collection("retailer-request-quotation");
-//     const data = await quotation.get();
-//     const productsArray = [];
-
-//     if (data.empty) {
-//       res.status(404).send("No student record found");
-//     } else {
-//       data.forEach((doc) => {
-//         const newData = {
-//           id: doc.id,
-//           price: doc.data().price,
-//           productName: doc.data().productName,
-//           quantity: doc.data().quantity,
-//           storeName: doc.data().storeName,
-//           storeID: doc.data().storeID,
-//         };
-//         productsArray.push(newData);
-//       });
-//       res.send(productsArray);
-//     }
-//   } catch (error) {
-//     res.status(400).send(error.message);
-//   }
-// };
 const deleteItem = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -316,11 +303,12 @@ const deleteItemList = async (req, res, next) => {
 
 module.exports = {
   getWholesalerQuotation,
+  addOrderList,
   getQuotationLists,
   getQuotationListsConfirm,
   addProductList,
   updateQuotationStatus,
-  updateCartAmount,
+  updateOrderStatus,
   getCartlists,
   quotationLists,
   getRetailerTransectionInfo,
